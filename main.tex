@@ -65,12 +65,11 @@ Abstract
 
 
 \section{Introduction}
-\begin{itemize}
-    \item introduce audiocompression
-    \item how does it normally work
-    \item state why autoencoders work differently
-    \item structure of the essay
-\end{itemize}
+The objective of audio data compression is to reduce the transmission bandwidth and storage requirements of audio data. Audio compression algorithms, implemented in software as audio codecs, are divided in two main categories: lossless data compression algorithms,  usually exploit statistical redundancy to represent data without losing any information, while lossy algorithms, such as MP3, rely on psychoacoustics in order to identify and remove marginally important information, thus reducing fidelity, in order to achieve higher compression rates \cite{Mahdi.2012}.
+
+In order to determine what information in an audio signal is perceptually irrelevant, most lossy compression algorithms use transforms, such as the modified discrete cosine transform (MDCT), to convert time domain sampled waveforms (for instance, WAV files) into the frequency domain. Once transformed, component frequencies can be allocated bits according to how audible they are. 
+
+In this essay,  we experiment with autoencoders as an alternative way to compress audio files.
 
 \section{Approaches to Autoencoders}
 % general information about project, such as pre and postprocessing
