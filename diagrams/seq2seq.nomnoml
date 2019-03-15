@@ -1,0 +1,17 @@
+// Sequence to sequence
+#direction: right
+#arrowSize: 0.7
+
+[encoder |
+	[input_1 
+    (None, 500, 1)] -> [lstm_1 
+    (None, 50)]]
+[decoder | 
+	[repeat_vector_1
+    (None, 500, 50)] -> [lstm_2
+    (None, 500, 1)] 
+    [lstm_2
+    (None, 500, 1)] -> [time_distributed_1
+    (None, 500, 1)]]
+    
+[encoder] -> [decoder] 

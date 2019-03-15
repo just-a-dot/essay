@@ -1,0 +1,19 @@
+// Asymmetrical
+#direction: right
+#arrowSize: 0.7
+
+[encoder |
+	[input_1
+	(None, 2205)] -> [dense_1
+		(None, 980)]
+        [dense_1
+		(None, 980)] -> [dense_2
+			(None, 440)]
+            [dense_2
+			(None, 440)] -> [dense_3:
+				(None, 220)]]
+[decoder |
+	[dense_5
+	(None, 2205)]]
+    
+[encoder] -> [decoder]

@@ -1,0 +1,13 @@
+// Basic
+#direction: right
+#arrowSize: 0.7
+
+[encoder |
+	[input_1
+	(None, 2205)] -> [dense_1
+		(None, 220)]]
+[decoder |
+	[dense_1
+	(None, 2205)]]
+    
+[encoder] -> [decoder]

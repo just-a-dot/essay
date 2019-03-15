@@ -1,0 +1,52 @@
+// Convolutional
+#direction: right
+#arrowSize: 0.7
+
+[encoder |
+[input_1 
+(None,2000,1)] -> [conv1d_1 
+(None,1998,32)]
+[conv1d_1 
+(None,1998,32)] -> [max_pooling1d_1 
+(None,999,32)]
+[max_pooling1d_1 
+(None,999,32)] -> [conv1d_2 
+(None,997,16)]
+[conv1d_2 
+(None,997,16)] -> [batch_normalization_1
+(None,997,16)]
+[batch_normalization_1 
+(None,997,16)] -> [max_pooling1d_2 
+(None,498,16)]
+[max_pooling1d_2 
+(None,498,16)] -> [flatten_1 
+(None,7968)]
+[flatten_1 
+(None,7968)] -> [dense_1 
+(None,200)]
+]
+
+[decoder |
+[reshape_1 
+(None,200,1)] ->[conv1d_3 
+(None,198,16)]
+[conv1d_3 
+(None,198,16)] -> [up_sampling_1d_1 
+(None,396,16)]
+[up_sampling_1d_1 
+(None,396,16)] -> [conv1d_4 
+(None,386,32)]
+[conv1d_4 
+(None,386,32)] -> [up_sampling1d_2 
+(None,772,32)]
+[up_sampling1d_2 
+(None,772,32)] -> [flatten_2 
+(None,24704)]
+[flatten_2 
+(None,24704)] -> [dense_2 
+(None,2000)]
+[dense_2 
+(None,2000)] -> [reshape 
+(None,2000,1)]
+]
+[encoder] -> [decoder] 
