@@ -40,18 +40,18 @@
 \begin{document}
 \maketitle
 
+\begin{abstract}
+In this essay we present four different approaches for general music data compression using autoencoders. Current applications and the specific functionality of each approach are shown and explained. Furthermore, we compare the results of the approaches qualitatively and give an outlook on what further research could improve on.
+\end{abstract}
+
 \section*{Disclaimer}
 All authors contributed equally much to the project and the essay. \\
-
-\begin{abstract}
-\todo{abstract}
-\end{abstract}
 
 \section{Introduction}
 The objective of audio compression is to reduce the transmission bandwidth and storage requirements of audio data. Audio compression algorithms, implemented as audio codecs, are divided into two main categories: lossless and lossy data compression algorithms.\\ 
 Lossless algorithms usually exploit statistical redundancy to represent data without losing any information, while lossy algorithms, such as MP3, rely on psychoacoustics in order to identify and remove marginally important information. Fidelity is therefore reduced in order to achieve higher compression rates \cite{Mahdi.2012}.\par
-In order to determine what information is perceptually irrelevant, most lossy compression algorithms use transforms, e.g. the Modified Discrete Cosine Transform (MDCT), to convert time domain sampled waveforms (for instance WAVE files) into the frequency domain. Once transformed, component frequencies can be allocated more or less bits according to how audible they are. \par
-In our project we attempt audio data compression by means of unsupervised learning. In order to do so, we evaluated four different approaches to autoencoders, that the following section aims to describe both from a conceptual and an implementational point of view. \Cref{experiments} deals with the experiments we conducted on these architectures, providing information about the dataset used for the project, the preprocessing it requires and a comparison of the result obtained with the different models. We draw conclusions in \autoref{conclusion}.
+In order to determine what information is perceptually irrelevant, most lossy compression algorithms use transforms, e.g. the Modified Discrete Cosine Transform (MDCT), to convert time domain sampled waveforms (for instance, WAVE files) into the frequency domain. Once transformed, component frequencies can be allocated more or less bits according to how audible they are. \par
+In our project we attempt audio data compression by means of unsupervised learning. In order to do so, we evaluated four different approaches to autoencoders, that the following section aims to describe both from a conceptual and an implementational point of view. \Cref{experiments} deals with the experiments we conducted on these architectures, providing information about the dataset used for the project, the preprocessing it requires and a comparison of the results obtained with the different models. We draw conclusions in \autoref{conclusion}.
 
 \section{Different Autoencoder Approaches} \label{architectures}
    
@@ -63,19 +63,19 @@ Autoencoders are neural networks whose goal is to reconstruct the input data in 
 Use cases consist of noise reduction, feature extraction and compression. While noise reduction directly results from the fact that the input data should equal the output data, compression is accomplished by having hidden layers that are smaller in size than the input and output layers \cite{Hinton.2006}. One can get a encoder and decoder by splitting the network at the smallest hidden layer, the \enquote{bottlenck}. This layer also acts as the input for the decoder.\par
 We implemented the basic form of an autoencoder, with just one hidden layer used for compression. The size of the hidden layer directly relates to the compression size, which we set to be 10\% of the original input size. We used \texttt{sigmoid} instead of \texttt{ReLU} as an activation function since it outperformed it significantly.
 In \autoref{basic_fig} we show the architecture of the network we settled on.
-\image[basic.png][scale=0.2]{Architecture of our basic autoencoder.}\label{basic_fig}
+\image[basic.png][scale=0.2]{Architecture of our basic autoencoder.  Each box contains the name of a layer and its output shape.}\label{basic_fig}
 
 
 \subsection{Asymmetrical Autoencoders}
-Traditional autoencoders are symmetrical, meaning they have the same number of encoder and decoder layers. However, it is not necessary to have a symmetrical network \cite{Bosch.2017}. \\
-Therefore, one can construct a network consisting of multiple encoder and less decoder layers. By reducing the number of decoder layers we are reducing the number of parameters we need to adjust. This results in a more efficient training, which in turn is likely to reduce over-fitting, improve generalization capability and increase classification accuracy \cite{Majumdar.2017}. \\
-Using a large number of decoder layers also results higher loss \cite{Majumdar.2017}. Therefore, our approach with just one decoder layer is favourable. \\
-Some studies show that for benchmark problems asymmetrical autoencoders outperform symmetrical counterparts for both classification and compression problems \cite{Majumdar.2017}.\par
+Traditional autoencoders are symmetrical, meaning they have the same number of encoder and decoder layers. However, it is not necessary for the network to be symmetrical \cite{Bosch.2017}. \\
+Therefore, one can construct a network consisting of several encoder and less decoder layers. By reducing the number of decoder layers we are reducing the number of parameters we need to adjust. This results in a more efficient training, which in turn is likely to reduce overfitting, improve generalization capability and increase classification accuracy \cite{Majumdar.2017}. \\
+Using a large number of decoder layers also results in higher loss \cite{Majumdar.2017}. Therefore, our approach with just one decoder layer is favourable. \\
+Some studies show that for benchmark problems asymmetrical autoencoders outperform their symmetrical counterparts for both classification and compression problems \cite{Majumdar.2017}.\par
 %Applications
 Asymmetrical autoencoders can be used for unsupervised context-based sentence representation learning \cite{tang.2018}, for hyperspectral imaging, which is a rapidly growing field of remote sensing that has contributed significantly to Earth observations \cite{Palsson.2018}. It is also used for cell detection and classification especially for bone marrow histology images \cite{Song.2018}.\par
 We have tested two similar architectures, one symmetrical and one asymmetrical. Our results coincide with the results shown previously, therefore we decided to focus on an asymmetrical approach. \\
 During evaluation we noticed that having a small difference in size between subsequent layers resulted in worse performance than having a drastic change.
-Therefore, we decided on not having a very deep network, but rather one with only three encoding layers. The layers are all fully connected and use \texttt{sigmoid} as the activation function, since \texttt{ReLU} did not perform better. The actual network architecture is shown in \autoref{fig-asym}.
+Therefore, we decided on not having a very deep network, but rather one with only three encoding layers. The layers are all fully connected and use \texttt{sigmoid} as the activation function, since \texttt{ReLU} did not perform better. The final network architecture is shown in \autoref{fig-asym}.
 
 \image[asymmetrical.png][scale=0.25]{Architecture of our asymmetrical autoencoder.}\label{fig-asym}
 
@@ -92,36 +92,43 @@ Due to the nature of WAVE files, essentially to be considered sequences of float
 In this perspective, the obvious choice is to design an autoencoder whose encoder and decoder are Recurrent Neural Networks (RNNs), i.e. neural networks where connections between nodes form a directed graph along a temporal sequence. In principle, this approach is effective \cite{Sutskever.2014}. In practice, however, training such an autoencoder would prove difficult. It has been shown, in fact, that gradient descent becomes increasingly inefficient as the temporal span of the dependencies increases \cite{Bengio.1994}, due to the \textit{exploding gradient} and \textit{vanishing gradient} problems \cite{Pascanu.2012}.\\
 In order to solve the latter problem, RNNs are usually equipped with Long Short Term Memory (LSTM) units. This results in an architecture specifically designed to support sequence data, which has been proposed in \cite{Hochreiter.1997}.\par
 Autoencoders that make use of such architecture, commonly referred to as Sequence to Sequence Autoencoders (SA), have been successfully implemented to address a variety of unsupervised learning tasks.
-These include video representation learning \cite{Srivastava.2015}, one of the earliest applications of SA, and several Natural Language Processing (NLP) problems, e.g. audio data representation \cite{Yu.2016}, long text generation \cite{Jiwei.2015} and machine translation \cite{Sutskever.2014}. In all of the afore mentioned scenarios, one of the key advantages of SA is the possibility of encoding input sequences of arbitrary length into a fixed-dimensionality array.\par
+These include video representation learning \cite{Srivastava.2015}, one of the earliest applications of SA, and several Natural Language Processing (NLP) problems, e.g. audio data representation \cite{Yu.2016}, long text generation \cite{Jiwei.2015} and machine translation \cite{Sutskever.2014}. In all of the aforementioned scenarios, one of the key advantages of SA is the possibility of encoding input sequences of arbitrary length into a fixed-dimensionality array.\par
 \autoref{sa-fig} illustrates the layers used for our Keras implementation of a Sequence to Sequence Autoencoder. The encoder is composed of an \texttt{LSTM} layer, directly connected to the input layer. Specularly, the decoder basically consists of a second \texttt{LSTM} layer followed by a \texttt{TimeDistributed} layer wrapping a \texttt{Dense} layer so that the latter is applied to each element in the output sequence. As the diagram shows, however, the input shape of an \texttt{LSTM} layer is three-dimensional, while its output only has two dimensions. This is the reason for having a \texttt{RepeatVector} layer, acting as an adapter, between the two \texttt{LSTM} layers \cite{Chollet.2015}.
 
-\image[seq2seq.png][scale=0.45]{Layers of our implementation of a SA. Each box contains the name of a layer and its output shape.} \label{safig}
-
+\image[seq2seq.png][scale=0.45]{Layers of our implementation of a SA.} \label{sa-fig}
 
 
 \section{Experiments} \label{experiments}
+We conducted various experiments using the different approaches. In the following section the results, parameters and input are explained.
+
 \subsection{Dataset}
-The dataset used for this project is the GTZAN Genre Collection, the dataset used by G. Tzanetakis and P. Cook in their paper \enquote{Musical genre classification of audio signals}. The part of the dataset we used consists of 30 second long segments of songs. There are 20 music genres represented in the dataset, each with 100 samples. The data is in the form of 22 050 Hz, 16-bit, mono channel, WAVE format files \cite{Tzanetakis.2002}.
+The dataset used for this project is the GTZAN Genre Collection, the dataset used by G. Tzanetakis and P. Cook in their paper \enquote{Musical genre classification of audio signals}. The part of the dataset we used consists of 30 second long segments of songs. There are twenty music genres represented in the dataset, each with one hundred segments. The data is in the form of 22 050 Hz, 16-bit, mono channel, WAVE format files \cite{Tzanetakis.2002}.
 \subsection{Data preprocessing}
 The WAVE format is a Resource Interchange File Format (RIFF) developed by Microsoft and IBM \cite{wavespec}. WAVE files can use a wide variety of data encodings \cite{waverfc}. In the case of the GTZAN Genre Collection, it is encoded with linear pulse code modulation. This means that the data is a time series of amplitude values in a fixed interval. Since the dataset is 16-bit WAVE, each sample is a signed integer in the range -32768 to 32767 \cite{wavespec}.\par
 The data was split into three segments: 80\% for training, 10\% for validation during training, and 10\% for final evaluation.\par
 To prepare the data for the network, we first cut the files up into chunks to fit the network's input layer. We then rescale the amplitude values to be floating-point values in the range of 0 to 1. This is to match the value range of the \texttt{sigmoid} function. These transformations are reversed in a postprocessing step, when the files are reconstructed.
 
 \subsection{Comparison} 
-As the parameters leading to the best results vary widely across the different architectures described in \autoref{architectures}, we compare their performance with a fixed compressed size of 10\% of the original input. All other parameters are chosen according to each architecture's characteristics, as shown in \autoref{table}.
-\begin{table}[h!]   \label{table}
+As the parameters leading to the best results vary widely across the different architectures described in \autoref{architectures}, we compare their performance with a fixed compressed size of 10\% of the original input. As shown in the table, all other parameters are chosen according to each architecture's characteristics. \par
+\begin{table}[h]   \label{table}
 \centering
-\begin{tabular}{|l|l|l|l|l|}
+{
+\renewcommand{\arraystretch}{1.35}
+
+\begin{tabular}{lcccc}
 \hline
 \textbf{Architecture}       & \textbf{val\_loss} & \# \textbf{epochs} & \textbf{learning rate} & \textbf{input size}  \\ \hline
-Basic              &           & 2000      & 0.00001       & 2205        \\ \hline
-Asymmetric Stacked &           & 2000      & 0.00001       & 2205        \\ \hline
-1D Convolutional   & 0.0012    & 200       & 0.00001       & 2000        \\ \hline
-LSTM               &           &           &               &             \\ \hline
+\textbf{Basic}              & 0.0012    & 2000     & 0.00001       & 2205        \\ 
+\textbf{Asymmetric Stacked} & 0.0010  & 2000    & 0.00001       & 2205        \\
+\textbf{1D Convolutional}   & 0.0012    & 200      & 0.00001       & 2000        \\
+\textbf{LSTM}               & 0.0057    & 20      & 0.00001       & 2000        \\
+\hline
 \end{tabular}
-\caption{Parameters and validation loss for the four chosen architectures.}
+\caption{Parameters and validation loss for the different architectures.}
+}
 \end{table}
-\todo{discuss the results verbally}
+The better performing model is, so far, the asymmetrical one. Interestingly, the convolutional model seems not to perform any better than the most basic architecture we tested. The 1D convolutional network, however, is also the deepest among the ones we tried to train. As a consequence, its training is significantly slower and has been limited to 200 epochs. With further training, it would be likely to outperform the basic model.
+The Sequence to Sequence Autoencoder described in \autoref{seq2seq}, being a recurrent neural network, proved itself to be even harder to train, making an in-depth analysis not feasible.
 
 \subsection{Further remarks}\label{further}
 When taking a closer look at the reconstructed audio, it is subjectively noticeable that the lower frequencies are represented better than the higher frequencies. When a low-pass filter is applied to remove high frequencies, a lot of the artifacts introduced by our compression disappear. \par
@@ -131,10 +138,9 @@ The difference between input and output became even larger when we tried to use 
 \section{Conclusion} \label{conclusion}
 As we have shown previously, it is possible to use autoencoders for audio compression. However, the results are clearly not lossless. While it is recognizable that the reconstructed audio originates from the input file, there is still a noticeable difference.\\
 The approach we used is aimed at general music compression, but by attempting to cover different areas of interest we might get better results. Specializing on a particular genre or disregarding music in the first place could be interesting and should be researched further. 
-A more thorough exploration of the 1D-convolutional approach, possibly based on the research that has been done on compressing ECG signals, might be interesting.
+A more thorough exploration of the 1D-convolutional approach, possibly based on the research that has been done on compressing ECG signals, might be interesting.\\
 Furthermore, as mentioned in \autoref{seq2seq}, Sequence to Sequence Autoencoders are potentially capable of handling arbitrarily long inputs. With adequate hardware, it would then be interesting to try to work on a more realistic dataset, where songs vary in terms of length.\par
 Since our problem is only attacking audio compression, there are no real social or ethical implications. 
-\todo{more conclusive conclusion?}
 
 \cleardoublepage
 \printbibliography
